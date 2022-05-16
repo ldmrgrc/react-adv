@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ProductsInCart, Product } from "../interfaces/productInterfaces";
 
 export const useShoppingCart = () => {
-
   const [shoppingCart, setShoppingCart] = useState<{
     [key: string]: ProductsInCart;
   }>({});
@@ -14,40 +13,22 @@ export const useShoppingCart = () => {
     product: Product;
     count: number;
   }) => {
-
+    // console.log({count, product});
     const { id } = product;
 
     setShoppingCart((oldShoppingCart) => {
-      const productInCart: ProductsInCart = oldShoppingCart[id] || {
-        ...product,
-        count: 0,
-      };
-
-      if (Math.max(productInCart.count + count, 0) > 0) {
-        return {
-          ...oldShoppingCart,
-          [id]: {
-            ...productInCart,
-            count: productInCart.count + count,
-          },
-        };
+      if (count === 0) {
+        const { [id]: removedProduct, ...newShoppingCart } = oldShoppingCart;
+        return newShoppingCart;
       }
 
-      const { [id]: removedProduct, ...newShoppingCart } = oldShoppingCart;
-      return newShoppingCart;
-
-      // if (count === 0) {
-      //   const { [id]: removedProduct, ...newShoppingCart } = shoppingCart
-      //   return newShoppingCart
-      // }
-
-      // return {
-      //   ...shoppingCart,
-      //   [id]: {
-      //     ...product,
-      //     count
-      //   }
-      // }
+      return {
+        ...oldShoppingCart,
+        [id]: {
+          ...product,
+          count,
+        },
+      };
     });
   };
 
